@@ -3,7 +3,6 @@ layout: post
 title: AtomのTerminal-Plusのシェルが起動しない
 ---
 
-# AtomのTerminal-Plusのシェルが起動しない
 AtomにはTerminal-PlusというAtom内でターミナルを起動するというアプリがある。
 とても便利なパッケージだ。
 Terminal-Plusは下のような動作をするものだ。
