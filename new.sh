@@ -9,4 +9,6 @@ touch ~/reetok99709.github.io/_posts/$time$name
 echo "Done : Create File"
 echo "Open Editor..."
 atom -nw ~/reetok99709.github.io/_posts/$time$name
-
+echo "OK?"
+read ok
+. ~/reetok99709.github.io/commit.sh
