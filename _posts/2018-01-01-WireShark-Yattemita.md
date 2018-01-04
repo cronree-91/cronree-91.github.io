@@ -10,7 +10,7 @@ macOS High Sierra 10.13.1
 ## 目次  
 1. ダウンロード  
 2. インストール  
-3. 実践4  
+3. 実践  
 ## ダウンロード  
 [Wiershark](https://www.wireshark.org/download.html)  
 から，自分にあったやつを落としましょう  
