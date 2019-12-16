@@ -1,0 +1,126 @@
+---  
+layout: post  
+title: 現在作成中のbittnのメモ
+--- 
+
+本記事は、[言語自作アドベントカレンダー](https://qiita.com/advent-calendar/2019/lang_dev)の10日の記事です。
+
+
+
+私は少し前から、bittnと言うプログラミング言語を作っています。bittnはカスタマイズできる言語があれば面白いと思い、2ヶ月ほど前に作り始めた言語です。
+
+## 目次
+
+1. 概要
+1. メリットとデメリット
+1. デメリットに対する対策
+1. 具体的な仕様
+1. 実装方法
+1. 最後に
+
+## 概要
+
+bittnは、言語の仕様・動作を設定ファイルに記述・使用できるプログラミング言語です。
+
+殆どの開発環境(vim,tmux...)には、設定ファイルというファイルが存在し、そこで動作をカスタマイズできます。
+プログラミング言語も、そのような特徴を持っていれば、簡単なDNSを作る場面などで役立つと思います。
+
+## メリットとデメリット
+・メリット
+言語作成のプラットフォームとして使用できる
+自分好みの言語を使用できる。
+・デメリット
+他の人のコードと合わない
+チーム開発が難しい
+
+## デメリットに対する対策
+そこで、デメリットに対する対策は以下のように実装していく予定です。
+チーム開発では、同じ設定ファイルを共有できれば問題ないと思います。そこで、設定ファイルをディレクトリごとに設定できるシステムも作成すれば解決すると考えています。
+
+## 具体的な仕様
+
+構文の設定は、以下のような設定ファイルを想定しています。
+
+```
+class NumericParser < Parslet::Parser
+  idens = ["print"]
+  root(:code)
+  rule(:space){ str(" ") }
+  rule(:spaces){ space.repeat(1) }
+  rule(:space?){ spaces.maybe }
+  rule(:return_mark){ str("\n") }
+  rule(:returns){ return_mark.repeat(1) }
+  rule(:return?){ returns.maybe }
+  rule(:sprt?){ (return_mark | space).repeat(0)}
+  rule(:chars){ str("a") | str("b") | str("c") | str("d") | str("e") | str("f") | str("g") | str("h") | str("i") | str("j") | str("k") | str("l") | str("m") | str("n") | str("o") | str("p") | str("q") | str("r") | str("s") | str("t") | str("u") | str("v") | str("w") | str("x") | str("y") | str("z") | str("A") | str("B") | str("C") | str("D") | str("E") | str("F") | str("G") | str("H") | str("I") | str("J") | str("K") | str("L") | str("M") | str("N") | str("O") | str("P") | str("Q") | str("R") | str("S") | str("T") | str("U") | str("V") | str("W") | str("X") | str("Y") | str("Z") | str("0") | str("1") | str("2") | str("3") | str("4") | str("5") | str("6") | str("7") | str("8") | str("9") | str(" ") | str("!") | str("\\\"") | str("#") | str("$") | str("%") | str("&") | str("\\'") | str("(") | str(")") | str("-") | str("^") | str("@") | str("[") | str(";") | str(":") | str("]") | str(",") | str(".") | str("/") | str("\\\\") | str("=") | str("~") | str("|") | str("`") | str("{") | str("+") | str("*") | str("}") | str("<") | str(">") | str("?") | str("_") | str("\\n") | str("\s") | str("\t") }
+
+  rule(:string) {
+    str("\"") >> chars.repeat >> str("\"")
+  }
+
+  rule(:var) {
+    match("[a-z]") >> match("[a-zA-Z1234567890]").repeat
+  }
+
+  rule(:integer) {
+    match("[0-9]").repeat(1)
+  }
+
+  rule(:code) {
+    (line >> str("\n")).repeat(1)
+  }
+
+  rule(:line) {
+    func | assign | value | sprt?
+  }
+
+  rule(:func) {
+    idens.map{|f| str(f)}.inject(:|) >> block
+  }
+
+  rule(:block){
+    block_value | block_lists
+  }
+
+  rule(:block_value){
+    str("(") >> sprt? >> line >> sprt? >> str(")")
+  }
+
+  rule(:block_lists){
+    str("{") >> sprt? >> code >> sprt? >>str("}")
+  }
+
+  rule(:value){
+    string | var | integer | func
+  }
+  
+  rule(:assign) {
+    var >> space? >> str("=") >> space? >> value
+  }
+end
+```
+動作の設定・読み取りは実装中です。
+
+## 実装方法
+使用言語は、Rubyです。
+構文の設定部分を処理しているライブラリにはparsletを用いています。
+動作の設定には、中間言語のObjectをユーザに定義させることを検討しています。
+具体的には、ソースコードをユーザの設定ファイルに記述されたparsletのルールでパースしています。
+
+## これからの作業予定
+設定ファイルの管理マネージャ、中間言語への変換、実行部分は順次、実装していきます。
+
+## 今後の展望
+この言語は、DSLのような簡易なプログラミング言語を作成する際のプラットフォームとしても応用できると考えています。
+
+## 最後に
+Githubのリンクは下に貼りました。アドバイスを頂けたら、嬉しいです。また、投稿が遅れてしまい、申し訳ありませんでした。
+
+[Github](https://github.com/pinenut-programming-language/bittn)
+
+ --- 自己紹介 --- 
+reeetok99709
+プログラミングができるようになりたいカワウソ。
+3年前からプログラミング言語を作っている。
+都内在住の中学生。趣味は競技プログラミングとCTF。
+このアドベントカレンダーは数年前から知っていて、憧れていた。こんな拙い記事で申し訳ないが、投稿できて、光栄だ。
