@@ -1,6 +1,6 @@
 ---  
 layout: post  
-title: [DISCORD BOT] SERVER MANAGER コマンドヘルプ＆機能紹介
+title: \[DISCORD BOT\] SERVER MANAGER コマンドヘルプ＆機能紹介
 --- 
 Server Managerの招待リンクはこちら↓
 
